@@ -10,7 +10,7 @@ using namespace std;
 //class ParticleSystem_fire : public Drawable
 //{
 //	Vector2f emiter{200, 300};
-//	int part_amount = 1000;
+//	int part_amount = 15000;
 //	Vector2f part_size{ 3, 3 };
 //
 //	struct Particle
@@ -82,13 +82,15 @@ class ParticleSystem : public Drawable
 	{
 	public:
 		int minAngle = 0;
-		int maxAngle = 360;
+		int maxAngle = 360 ;
 
 		int minSpeed = 30;
-		int maxSpeed = 90;
+		int maxSpeed = 70;
 
-		int minLifeTimeMilliseconds = 200;
-		int maxLifeTimeMilliseconds = 1500;
+		int minLifeTimeMilliseconds = 2500;
+		int maxLifeTimeMilliseconds = 4000;
+
+
 
 		int quadIndex = 0;
 		float speed;
@@ -103,7 +105,8 @@ class ParticleSystem : public Drawable
 		void resetObjVars()
 		{
 			speed = minSpeed + (rand() % (maxSpeed - minSpeed));
-			float angleRad = ( rand() % (maxAngle - minAngle) + minAngle ) * 3.14f / 180.f;
+			float angleRad = ( rand() % (maxAngle - minAngle) + minAngle ) * 3.14159 / 180.f;
+			cout << (rand() % (maxAngle - minAngle) + minAngle) << endl;
 			speedVec = { cos(angleRad) * speed , sin(angleRad) * speed };
 			lifeTime = milliseconds( rand() % (maxLifeTimeMilliseconds - minLifeTimeMilliseconds) + minLifeTimeMilliseconds );
 			lifeTime_left = lifeTime;
@@ -112,20 +115,21 @@ class ParticleSystem : public Drawable
 
 	vector<Vertex> vertexVec;
 	vector<ParticleDataObj> particleDataVec;
-
+	Texture t;
 	Clock resetTimer;
 
-	Vector2f emitterPos = { 400 , 300 };
+	FloatRect emitterRect = { 400 , 300, 20, 30 };
 	int particlesAmount = 0;
 
-	int default_particlesAmount = 15000;
-	Vector2f default_particleSize = { 5, 5 };
+	int default_particlesAmount = 1000;
+	Vector2f default_particleSize = { 30, 30 };
 public:
 	ParticleSystem() 
 	{ 
 		for (int i = 0; i < default_particlesAmount; i++)
 		{
 			addParticle();
+			t.loadFromFile("fire.png");
 		}
 	};
 	virtual ~ParticleSystem() {};
@@ -142,21 +146,22 @@ public:
 			vertexVec[i * 4 + 3].position += particleDataVec[i].speedVec * cycleTime.asSeconds();
 
 			float remainingLifeTimeRatio = particleDataVec[i].lifeTime_left / particleDataVec[i].lifeTime;
-			setParticleTransperency(i, remainingLifeTimeRatio * 255);
-			setParticleSize(i, remainingLifeTimeRatio * default_particleSize);
+			//setParticleTransperency(i, remainingLifeTimeRatio * 255);
+			//setParticleSize(i, remainingLifeTimeRatio * default_particleSize);
 
 			particleDataVec[i].lifeTime_left -= cycleTime;
 			if (particleDataVec[i].lifeTime_left <= Time::Zero)
 			{
 				particleDataVec[i].resetObjVars();
-				setParticlePos(i, emitterPos);
+				setParticlePos(i, { rand() % (int)emitterRect.width + emitterRect.left, rand() % (int)emitterRect.height + emitterRect.top });
 			}
 		}
 	}
-	void setEmitterPos(Vector2f newPos) { emitterPos = newPos; };
+	void setEmitterPos(Vector2f newPos) { emitterRect.left = newPos.x; emitterRect.top = newPos.y; };
 	virtual void draw(RenderTarget& target, RenderStates states) const
 	{
-		target.draw(&vertexVec[0], vertexVec.size(), sf::Quads);
+		states.texture = &t;
+		target.draw(&vertexVec[0], vertexVec.size(), sf::Quads, states);
 	};
 
 private:
@@ -194,15 +199,20 @@ private:
 		Vertex dr; dr.position = { default_particleSize.x, default_particleSize.y };
 		Vertex dl; dl.position = { 0, default_particleSize.y };
 
-		ul.position += emitterPos;
-		ur.position += emitterPos;
-		dr.position += emitterPos;
-		dl.position += emitterPos;
+		ul.position += {emitterRect.left, emitterRect.top };
+		ur.position += {emitterRect.left, emitterRect.top };
+		dr.position += {emitterRect.left, emitterRect.top };
+		dl.position += {emitterRect.left, emitterRect.top };
 
-		ul.color = getRandomColor();
+		ul.texCoords = { 0, 0 };
+		ur.texCoords = { (float)t.getSize().x, 0 };
+		dr.texCoords = { (float)t.getSize().x, (float)t.getSize().y };
+		dl.texCoords = { 0, (float)t.getSize().y };
+
+		/*ul.color = getRandomColor();
 		ur.color = getRandomColor();
 		dr.color = getRandomColor();
-		dl.color = getRandomColor();
+		dl.color = getRandomColor();*/
 
 		vertexVec.push_back(ul);
 		vertexVec.push_back(ur);
@@ -231,6 +241,7 @@ int main()
 	RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
 
 	ParticleSystem part_sys;
+	//ParticleSystem_fire part_sys;
 
 
 	while (window.isOpen())
@@ -245,7 +256,8 @@ int main()
 		}
 
 		part_sys.update(cycleTime, {0 , 0});
-
+		//part_sys.update(cycleTime);
+		//part_sys.setEmiterPos(window.mapPixelToCoords(Mouse::getPosition(window)));
 		part_sys.setEmitterPos(window.mapPixelToCoords(Mouse::getPosition(window)));
 
 		window.clear(Color::Cyan);
