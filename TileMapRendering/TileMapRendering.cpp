@@ -27,12 +27,19 @@ int main()
 		}
 	}
 
+	Texture tile0_t, tile1_t;
 
 	tile0_t.loadFromFile("t_0.png");
 	tile1_t.loadFromFile("t_1.png");
 
+	RectangleShape stamp({ tileSize, tileSize });
+	RenderTexture render_t;
+
+	render_t.create(mapWidth * tileSize, mapHeight * tileSize);
 
 	render_t.create(mapWidth * tileSize_px, mapHeight * tileSize_px);
+
+
 
 
 	for (int i = 0; i < mapHeight; i++)
@@ -50,7 +57,9 @@ int main()
 			stamp.setPosition({k * tileSize_px, i * tileSize_px });
 			render_t.draw(stamp);
 
+			cout << tilMapData_arr[i][k];
 		}
+		cout << endl;
 	}
 
 	render_t.display();
