@@ -9,18 +9,20 @@
 using namespace sf;
 
 using v2f = Vector2f;
+using v2i = Vector2i;
+using v2u = Vector2u;
 
 class Game
 {
-	const v2f SCR_SIZE = { 800, 600 };
+	const v2u SCR_SIZE = { 800, 600 };
+	RenderWindow window{ {SCR_SIZE.x, SCR_SIZE.y}, "Window"};
 
 	std::vector<Scene*> sceneVec;
-	MainMenuScene mainMenuScene{"mainMenuScene"};
-	GameScene gameScene{ "gameScene" };
+	MainMenuScene mainMenuScene{ "mainMenuScene", window };
+	GameScene gameScene{ "gameScene", window };
 
 
 	Event event;
-	RenderWindow window;
 	Clock globalTimer, deltaTimer;
 public:
 	Game();
