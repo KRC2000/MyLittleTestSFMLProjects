@@ -36,6 +36,7 @@ void Map::extractTileMapData()
 
 	// Extracting map id data
 	std::string data_s = eChunk->GetText();
+
 	for (int i = 0; i < data_s.length(); i++)
 	{
 		if (data_s[i] != ',' && data_s[i] != '\n' && data_s[i] != '\0')
@@ -53,7 +54,7 @@ void Map::extractTileMapData()
 }
 
 void Map::extractTilesetData(String tilesetXmlFilePath)
-{
+	{
 	// Open xml file of tile set to get texture file name
 	tinyxml2::XMLDocument tilesetXml;
 	tinyxml2::XMLError eResult = tilesetXml.LoadFile(tilesetXmlFilePath.toAnsiString().c_str());
