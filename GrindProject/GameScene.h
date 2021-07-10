@@ -20,11 +20,11 @@ class GameScene : public Scene
 
 	String s = "box";
 
-	Player p1{world};
+	Player p1{world, *gTime};
 
 public:
-	GameScene(String sceneName, RenderWindow& window);
-	virtual String update(Time gTime, Time dTime) ;
+	GameScene(String sceneName, RenderWindow& window, const Time& gTime, const Time& dTime);
+	virtual String update() ;
 	virtual void processInputEvents(Event& event);
 	virtual void draw(RenderTarget& target, RenderStates states) const ;
 };

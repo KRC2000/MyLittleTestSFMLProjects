@@ -17,9 +17,11 @@ class Game
 	const v2u SCR_SIZE = { 800, 600 };
 	RenderWindow window{ {SCR_SIZE.x, SCR_SIZE.y}, "Window"};
 
+	Time globalTime, deltaTime;
+
 	std::vector<Scene*> sceneVec;
-	MainMenuScene mainMenuScene{ "mainMenuScene", window };
-	GameScene gameScene{ "gameScene", window };
+	MainMenuScene mainMenuScene{ "mainMenuScene", window, globalTime, deltaTime };
+	GameScene gameScene{ "gameScene", window, globalTime, deltaTime };
 
 
 	Event event;

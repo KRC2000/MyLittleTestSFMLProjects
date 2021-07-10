@@ -14,7 +14,7 @@ public:
 	enum CamerMode { FREE_CAM, FOLLOW_CAM};
 private:
 
-	CamerMode camMode = FREE_CAM;
+	CamerMode camMode = FOLLOW_CAM;
 
 	RenderTarget* target;
 	bool mouseGrabbed = false;

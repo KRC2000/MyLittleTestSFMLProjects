@@ -1,12 +1,12 @@
 #include "GameScene.h"
 
-GameScene::GameScene(String sceneName, RenderWindow& window) :Scene(sceneName, window)
+GameScene::GameScene(String sceneName, RenderWindow& window, const Time& gTime, const Time& dTime) :Scene(sceneName, window, gTime, dTime)
 {
 	cam.reset(FloatRect(0, 0, window.getSize().x, window.getSize().y));
 
 }
 
-String GameScene::update(Time gTime, Time dTime)
+String GameScene::update()
 {
 	if (physicsCycleTimer.getElapsedTime().asSeconds() > 1 / 60.f)
 	{

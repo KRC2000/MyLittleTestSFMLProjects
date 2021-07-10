@@ -14,13 +14,14 @@ void Game::process()
 {
 	while (window.isOpen())
 	{
-
+		deltaTime = deltaTimer.restart();
+		globalTime = globalTimer.getElapsedTime();
 
 		inputReg();
 
 		// Updating all scenes
 		for ( auto& scene : sceneVec)
-			scene->update(globalTimer.getElapsedTime(), deltaTimer.getElapsedTime());
+			scene->update();
 
 		window.clear();
 
@@ -30,7 +31,6 @@ void Game::process()
 
 		window.display();
 
-		deltaTimer.restart();
 	}
 }
 
